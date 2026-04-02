@@ -9,12 +9,14 @@
   const statusEl = document.querySelector(".status");
   const targetLanguageEl = document.getElementById("targetLanguage");
   const sourceLanguageEl = document.getElementById("sourceLanguage");
-  const timestampEl = document.getElementById("timestamp");
   const translationTextEl = document.getElementById("translationText");
   const translationFeedEl = document.getElementById("translationFeed");
   const clockEl = document.getElementById("clock");
+  const tickerTextEl = document.getElementById("tickerText");
+  const appEl = document.getElementById("app");
   const MAX_LINES = 10;
   const renderedChunks = new Map();
+  let displayMode = "feed";
 
   function setConnected(connected, label) {
     statusEl.classList.toggle("connected", connected);
@@ -46,7 +48,13 @@
     return code.toUpperCase();
   }
 
-  function upsertFeedLine(payload, text, sourceLanguage, targetLanguage, timestamp) {
+  function applyDisplayMode(nextMode) {
+    displayMode = ["feed", "caption", "ticker"].includes(nextMode) ? nextMode : "feed";
+    appEl.classList.remove("mode-feed", "mode-caption", "mode-ticker");
+    appEl.classList.add(`mode-${displayMode}`);
+  }
+
+  function upsertFeedLine(payload, text) {
     const chunkId = (payload.chunk_id || payload.chunkId || "").toString();
     if (!chunkId) {
       return;
@@ -57,21 +65,15 @@
       lineEl = document.createElement("article");
       lineEl.className = "translation-line";
 
-      const metaEl = document.createElement("div");
-      metaEl.className = "translation-line__meta";
-
       const textEl = document.createElement("div");
       textEl.className = "translation-line__text";
 
-      lineEl.appendChild(metaEl);
       lineEl.appendChild(textEl);
       renderedChunks.set(chunkId, lineEl);
       translationFeedEl.prepend(lineEl);
     }
 
-    const metaEl = lineEl.children[0];
-    const textEl = lineEl.children[1];
-    metaEl.textContent = `${humanLang(sourceLanguage)} -> ${humanLang(targetLanguage)}  ${timestamp}`;
+    const textEl = lineEl.children[0];
     textEl.textContent = text || " ";
 
     for (const element of translationFeedEl.querySelectorAll(".translation-line")) {
@@ -97,6 +99,10 @@
   }
 
   function renderPayload(payload) {
+    if ((payload.message_type || payload.messageType || "") === "config") {
+      applyDisplayMode((payload.display_mode || payload.displayMode || "").toString().toLowerCase());
+      return;
+    }
     const text = (
       payload.translation ||
       payload.translation_text ||
@@ -107,15 +113,19 @@
       payload.target_language || payload.targetLanguage || payload.target || "";
     const sourceLanguage =
       payload.source_language || payload.sourceLanguage || payload.source || "";
-    const timestamp =
-      payload.timestamp || payload.timestamp_label || payload.time || "--";
+    const nextDisplayMode = (
+      payload.display_mode ||
+      payload.displayMode ||
+      displayMode
+    ).toString().toLowerCase();
     if (translationTextEl) {
       translationTextEl.remove();
     }
     targetLanguageEl.textContent = `Target: ${humanLang(targetLanguage)}`;
     sourceLanguageEl.textContent = `Source: ${humanLang(sourceLanguage)}`;
-    timestampEl.textContent = String(timestamp);
-    upsertFeedLine(payload, text, sourceLanguage, targetLanguage, timestamp);
+    tickerTextEl.textContent = text || " ";
+    applyDisplayMode(nextDisplayMode);
+    upsertFeedLine(payload, text);
   }
 
   function bootstrapCastReceiver() {
@@ -157,5 +167,6 @@
   setClock();
   setInterval(setClock, 1000);
   setConnected(false, "Waiting for sender...");
+  applyDisplayMode("feed");
   bootstrapCastReceiver();
 })();
