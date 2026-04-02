@@ -18,6 +18,8 @@
   const MAX_LINES = 10;
   const renderedChunks = new Map();
   let displayMode = "feed";
+  let lastRenderedText = "";
+  let lastRenderedWasNoise = false;
 
   function setConnected(connected, label) {
     statusEl.classList.toggle("connected", connected);
@@ -47,6 +49,13 @@
   function humanLang(code) {
     if (!code || typeof code !== "string") return "--";
     return code.toUpperCase();
+  }
+
+  function isNoiseMarkerText(text) {
+    const value = (text || "").trim();
+    if (!value) return false;
+    if (value.length > 8) return false;
+    return !/[\p{L}\p{N}]/u.test(value);
   }
 
   function refreshTicker(text) {
@@ -91,6 +100,12 @@
   function upsertFeedLine(payload, text) {
     const chunkId = (payload.chunk_id || payload.chunkId || "").toString();
     if (!chunkId) {
+      return;
+    }
+
+    const latestLine = translationFeedEl.querySelector(".translation-line");
+    const latestText = latestLine?.querySelector(".translation-line__text")?.textContent || "";
+    if (isNoiseMarkerText(text) && latestText === text) {
       return;
     }
 
@@ -152,6 +167,10 @@
       payload.displayMode ||
       displayMode
     ).toString().toLowerCase();
+    const isNoise = isNoiseMarkerText(text);
+    if (isNoise && lastRenderedWasNoise && lastRenderedText === text) {
+      return;
+    }
     if (translationTextEl) {
       translationTextEl.remove();
     }
@@ -160,6 +179,8 @@
     refreshTicker(text);
     applyDisplayMode(nextDisplayMode);
     upsertFeedLine(payload, text);
+    lastRenderedText = text;
+    lastRenderedWasNoise = isNoise;
   }
 
   function bootstrapCastReceiver() {
