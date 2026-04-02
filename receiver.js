@@ -66,7 +66,7 @@
       lineEl.appendChild(metaEl);
       lineEl.appendChild(textEl);
       renderedChunks.set(chunkId, lineEl);
-      translationFeedEl.appendChild(lineEl);
+      translationFeedEl.prepend(lineEl);
     }
 
     const metaEl = lineEl.children[0];
@@ -78,24 +78,22 @@
       element.classList.remove("translation-line--latest");
     }
     lineEl.classList.add("translation-line--latest");
-    translationFeedEl.appendChild(lineEl);
+    translationFeedEl.prepend(lineEl);
 
     while (translationFeedEl.children.length > MAX_LINES) {
-      const firstChild = translationFeedEl.firstElementChild;
-      if (!firstChild) break;
-      if (firstChild.id === "translationText") {
-        translationFeedEl.removeChild(firstChild);
+      const lastChild = translationFeedEl.lastElementChild;
+      if (!lastChild) break;
+      if (lastChild.id === "translationText") {
+        translationFeedEl.removeChild(lastChild);
         continue;
       }
       renderedChunks.forEach((value, key) => {
-        if (value === firstChild) {
+        if (value === lastChild) {
           renderedChunks.delete(key);
         }
       });
-      translationFeedEl.removeChild(firstChild);
+      translationFeedEl.removeChild(lastChild);
     }
-
-    translationFeedEl.scrollTop = translationFeedEl.scrollHeight;
   }
 
   function renderPayload(payload) {
