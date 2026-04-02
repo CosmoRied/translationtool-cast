@@ -27,6 +27,7 @@
   }
 
   function parseMessage(raw) {
+    if (raw && typeof raw === "object") return raw;
     if (typeof raw !== "string") return null;
     try {
       const parsed = JSON.parse(raw);
@@ -43,11 +44,22 @@
   }
 
   function renderPayload(payload) {
-    const text = (payload.translation || "").toString();
+    const text = (
+      payload.translation ||
+      payload.translation_text ||
+      payload.text ||
+      ""
+    ).toString();
+    const targetLanguage =
+      payload.target_language || payload.targetLanguage || payload.target || "";
+    const sourceLanguage =
+      payload.source_language || payload.sourceLanguage || payload.source || "";
+    const timestamp =
+      payload.timestamp || payload.timestamp_label || payload.time || "--";
     translationTextEl.textContent = text || " ";
-    targetLanguageEl.textContent = `Target: ${humanLang(payload.target_language)}`;
-    sourceLanguageEl.textContent = `Source: ${humanLang(payload.source_language)}`;
-    timestampEl.textContent = payload.timestamp ? String(payload.timestamp) : "--";
+    targetLanguageEl.textContent = `Target: ${humanLang(targetLanguage)}`;
+    sourceLanguageEl.textContent = `Source: ${humanLang(sourceLanguage)}`;
+    timestampEl.textContent = String(timestamp);
   }
 
   function bootstrapCastReceiver() {
