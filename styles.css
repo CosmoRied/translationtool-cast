@@ -83,8 +83,6 @@ body {
 }
 
 .translation {
-  flex: 1;
-  min-height: 0;
   font-size: clamp(2rem, 4.3vw, 5.6rem);
   line-height: 1.12;
   font-weight: 650;
@@ -92,6 +90,54 @@ body {
   overflow-wrap: anywhere;
   color: #f3f8ff;
   text-shadow: 0 0.05em 0.55em rgba(17, 101, 205, 0.24);
+}
+
+.translation-feed {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.translation--placeholder {
+  flex: 1;
+  min-height: 0;
   display: flex;
   align-items: center;
+  color: #cbd8ea;
+}
+
+.translation-line {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 1rem 1.2rem 1.15rem;
+  border: 1px solid rgba(91, 119, 163, 0.28);
+  border-radius: 1.25rem;
+  background: linear-gradient(180deg, rgba(28, 39, 59, 0.94), rgba(15, 21, 31, 0.92));
+  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.18);
+}
+
+.translation-line--latest {
+  border-color: rgba(74, 164, 255, 0.7);
+  box-shadow: 0 1rem 2.4rem rgba(35, 118, 201, 0.25);
+}
+
+.translation-line__meta {
+  color: var(--ink-dim);
+  font-size: clamp(0.8rem, 1vw, 1rem);
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.translation-line__text {
+  font-size: clamp(1.6rem, 3.2vw, 4.6rem);
+  line-height: 1.12;
+  font-weight: 650;
+  color: #f3f8ff;
+  text-shadow: 0 0.05em 0.55em rgba(17, 101, 205, 0.24);
+}
 }

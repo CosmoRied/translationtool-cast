@@ -11,7 +11,10 @@
   const sourceLanguageEl = document.getElementById("sourceLanguage");
   const timestampEl = document.getElementById("timestamp");
   const translationTextEl = document.getElementById("translationText");
+  const translationFeedEl = document.getElementById("translationFeed");
   const clockEl = document.getElementById("clock");
+  const MAX_LINES = 10;
+  const renderedChunks = new Map();
 
   function setConnected(connected, label) {
     statusEl.classList.toggle("connected", connected);
@@ -43,6 +46,58 @@
     return code.toUpperCase();
   }
 
+  function upsertFeedLine(payload, text, sourceLanguage, targetLanguage, timestamp) {
+    const chunkId = (payload.chunk_id || payload.chunkId || "").toString();
+    if (!chunkId) {
+      return;
+    }
+
+    let lineEl = renderedChunks.get(chunkId);
+    if (!lineEl) {
+      lineEl = document.createElement("article");
+      lineEl.className = "translation-line";
+
+      const metaEl = document.createElement("div");
+      metaEl.className = "translation-line__meta";
+
+      const textEl = document.createElement("div");
+      textEl.className = "translation-line__text";
+
+      lineEl.appendChild(metaEl);
+      lineEl.appendChild(textEl);
+      renderedChunks.set(chunkId, lineEl);
+      translationFeedEl.appendChild(lineEl);
+    }
+
+    const metaEl = lineEl.children[0];
+    const textEl = lineEl.children[1];
+    metaEl.textContent = `${humanLang(sourceLanguage)} -> ${humanLang(targetLanguage)}  ${timestamp}`;
+    textEl.textContent = text || " ";
+
+    for (const element of translationFeedEl.querySelectorAll(".translation-line")) {
+      element.classList.remove("translation-line--latest");
+    }
+    lineEl.classList.add("translation-line--latest");
+    translationFeedEl.appendChild(lineEl);
+
+    while (translationFeedEl.children.length > MAX_LINES) {
+      const firstChild = translationFeedEl.firstElementChild;
+      if (!firstChild) break;
+      if (firstChild.id === "translationText") {
+        translationFeedEl.removeChild(firstChild);
+        continue;
+      }
+      renderedChunks.forEach((value, key) => {
+        if (value === firstChild) {
+          renderedChunks.delete(key);
+        }
+      });
+      translationFeedEl.removeChild(firstChild);
+    }
+
+    translationFeedEl.scrollTop = translationFeedEl.scrollHeight;
+  }
+
   function renderPayload(payload) {
     const text = (
       payload.translation ||
@@ -56,10 +111,13 @@
       payload.source_language || payload.sourceLanguage || payload.source || "";
     const timestamp =
       payload.timestamp || payload.timestamp_label || payload.time || "--";
-    translationTextEl.textContent = text || " ";
+    if (translationTextEl) {
+      translationTextEl.remove();
+    }
     targetLanguageEl.textContent = `Target: ${humanLang(targetLanguage)}`;
     sourceLanguageEl.textContent = `Source: ${humanLang(sourceLanguage)}`;
     timestampEl.textContent = String(timestamp);
+    upsertFeedLine(payload, text, sourceLanguage, targetLanguage, timestamp);
   }
 
   function bootstrapCastReceiver() {
