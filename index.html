@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>TranslationTool Cast Receiver</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main id="app">
+    <header class="topbar">
+      <div class="status">
+        <span class="dot"></span>
+        <span id="connectionLabel">Waiting for sender...</span>
+      </div>
+      <div id="clock" class="clock"></div>
+    </header>
+
+    <section class="content">
+      <div class="meta">
+        <div id="targetLanguage" class="pill">Target: --</div>
+        <div id="sourceLanguage" class="pill">Source: --</div>
+        <div id="timestamp" class="pill">--</div>
+      </div>
+      <article id="translationText" class="translation">
+        Connect from TranslationTool and start speaking.
+      </article>
+    </section>
+  </main>
+
+  <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+  <script src="./receiver.js"></script>
+</body>
+</html>
