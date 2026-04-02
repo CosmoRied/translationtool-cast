@@ -13,6 +13,7 @@
   const translationFeedEl = document.getElementById("translationFeed");
   const clockEl = document.getElementById("clock");
   const tickerTextEl = document.getElementById("tickerText");
+  const tickerViewportEl = document.getElementById("tickerViewport");
   const appEl = document.getElementById("app");
   const MAX_LINES = 10;
   const renderedChunks = new Map();
@@ -46,6 +47,39 @@
   function humanLang(code) {
     if (!code || typeof code !== "string") return "--";
     return code.toUpperCase();
+  }
+
+  function refreshTicker(text) {
+    tickerTextEl.textContent = text || " ";
+    tickerTextEl.classList.remove("ticker__text--static", "ticker__text--scrolling");
+    tickerTextEl.style.removeProperty("--ticker-start");
+    tickerTextEl.style.removeProperty("--ticker-end");
+    tickerTextEl.style.animationDuration = "";
+
+    requestAnimationFrame(() => {
+      const viewportWidth = tickerViewportEl.clientWidth;
+      const textWidth = tickerTextEl.scrollWidth;
+      if (!viewportWidth || !textWidth) {
+        tickerTextEl.classList.add("ticker__text--static");
+        return;
+      }
+
+      if (textWidth <= viewportWidth * 0.92) {
+        tickerTextEl.classList.add("ticker__text--static");
+        return;
+      }
+
+      const startX = Math.max(viewportWidth * 0.08, 40);
+      const endX = -Math.max(textWidth - viewportWidth + startX, 24);
+      const travel = startX - endX;
+      const durationSeconds = Math.max(4.5, Math.min(12, travel / 120));
+
+      tickerTextEl.style.setProperty("--ticker-start", `${startX}px`);
+      tickerTextEl.style.setProperty("--ticker-end", `${endX}px`);
+      tickerTextEl.style.animationDuration = `${durationSeconds}s`;
+      void tickerTextEl.offsetWidth;
+      tickerTextEl.classList.add("ticker__text--scrolling");
+    });
   }
 
   function applyDisplayMode(nextMode) {
@@ -123,7 +157,7 @@
     }
     targetLanguageEl.textContent = `Target: ${humanLang(targetLanguage)}`;
     sourceLanguageEl.textContent = `Source: ${humanLang(sourceLanguage)}`;
-    tickerTextEl.textContent = text || " ";
+    refreshTicker(text);
     applyDisplayMode(nextDisplayMode);
     upsertFeedLine(payload, text);
   }
@@ -168,5 +202,6 @@
   setInterval(setClock, 1000);
   setConnected(false, "Waiting for sender...");
   applyDisplayMode("feed");
+  refreshTicker("Connect from TranslationTool and start speaking.");
   bootstrapCastReceiver();
 })();
