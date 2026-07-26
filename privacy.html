@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Privacy Policy for the Translation Tool Android application.">
+  <title>Translation Tool Privacy Policy</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --canvas: #f2f6f7;
+      --surface: #ffffff;
+      --ink: #172936;
+      --muted: #526775;
+      --accent: #05606a;
+      --line: #cbdde0;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --canvas: #061d21;
+        --surface: #0c2c31;
+        --ink: #edf7f6;
+        --muted: #b8ccce;
+        --accent: #74e0d6;
+        --line: #285056;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--canvas);
+      color: var(--ink);
+      font: 16px/1.65 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    main {
+      width: min(760px, calc(100% - 32px));
+      margin: 40px auto;
+      padding: clamp(24px, 5vw, 48px);
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: 0 18px 48px rgb(0 37 42 / 10%);
+    }
+    h1, h2 { line-height: 1.2; color: var(--accent); }
+    h1 { margin: 0 0 8px; font-size: clamp(30px, 6vw, 42px); }
+    h2 { margin: 34px 0 10px; font-size: 21px; }
+    p, li { max-width: 68ch; }
+    .updated { margin: 0; color: var(--muted); }
+    a { color: var(--accent); }
+    .notice {
+      margin-top: 24px;
+      padding: 16px 18px;
+      border-left: 4px solid var(--accent);
+      background: color-mix(in srgb, var(--accent) 8%, transparent);
+      border-radius: 0 12px 12px 0;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Translation Tool Privacy Policy</h1>
+    <p class="updated"><strong>Effective date:</strong> 26 July 2026</p>
+
+    <p>This Privacy Policy explains how the Translation Tool Android application (the <strong>App</strong>) handles information. The App is provided by <strong>CosmoReid</strong> (<strong>we</strong>, <strong>us</strong>, or <strong>our</strong>).</p>
+
+    <div class="notice">The App does not require an account and CosmoReid does not operate a server that receives or stores your recordings, transcripts, translations, or API token.</div>
+
+    <h2>Information the App accesses</h2>
+    <ul>
+      <li><strong>Microphone audio.</strong> The App accesses microphone audio only after you grant Android microphone permission and choose to record or transcribe audio.</li>
+      <li><strong>Speech, transcripts, and translations.</strong> Audio is processed into transcript and translation text. The App keeps transcript and translation history in its private on-device storage so that you can review it in the App.</li>
+      <li><strong>Settings and usage information.</strong> The App stores choices such as language settings, display preferences, and locally calculated usage estimates on your device.</li>
+      <li><strong>Your OpenAI API token.</strong> If you choose the OpenAI service, you may paste your own API token. The token is stored locally using Android Keystore protection and is used only to authenticate your requests to OpenAI. It is not sent to CosmoReid.</li>
+    </ul>
+
+    <h2>How information is used and shared</h2>
+    <p>The App uses audio and text only to provide transcription, translation, conversation display, and optional casting features that you request.</p>
+    <ul>
+      <li>If you enable the OpenAI service, audio and text needed for the selected feature are sent directly from your device to OpenAI using your own API token. OpenAI's handling of that information is governed by its policies and your OpenAI account settings.</li>
+      <li>If you choose an advanced custom server, audio and text are sent directly from your device to the HTTPS endpoint you configure. You are responsible for that server and its privacy practices. The App blocks cleartext HTTP custom-server connections.</li>
+      <li>If you enable Cast output, the text you choose to display may be sent to your selected Cast receiver so it can be shown on that device.</li>
+    </ul>
+    <p>We do not sell your personal information, use advertising SDKs, or use your recordings or text for advertising.</p>
+
+    <h2>Security</h2>
+    <p>Network requests containing user audio, text, or credentials use HTTPS encryption in transit. The App blocks cleartext HTTP connections for custom transcription servers. Your API token is protected locally with Android Keystore storage. No method of transmission or storage is completely secure, but we take reasonable measures consistent with the App's design to protect information under our control.</p>
+
+    <h2>Retention and deletion</h2>
+    <p>CosmoReid does not retain your recordings, transcripts, translations, settings, or API token on a developer-operated server. Local history and preferences remain on your device until you clear the App's data or uninstall the App. You can stop recording at any time. Data sent to OpenAI or a custom server is subject to that service's own retention and deletion practices.</p>
+    <p>The App does not provide user accounts, so there is no developer-controlled account or account data to delete.</p>
+
+    <h2>Children</h2>
+    <p>The App is not directed to children. Do not use the App to record or submit another person's voice or personal information unless you have the authority and any required consent to do so.</p>
+
+    <h2>Changes to this policy</h2>
+    <p>We may update this Privacy Policy to reflect changes to the App or applicable requirements. We will post the updated policy at this URL and update the effective date.</p>
+
+    <h2>Contact</h2>
+    <p>For privacy questions, contact CosmoReid at <a href="mailto:cosmo.ried@gmail.com">cosmo.ried@gmail.com</a>.</p>
+  </main>
+</body>
+</html>
